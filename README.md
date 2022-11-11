@@ -2,7 +2,7 @@
 
 This is MERN course project
 
-# MERN stack project
+# Stack
 
 - MongoDB
 - Express
