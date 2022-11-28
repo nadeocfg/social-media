@@ -8,7 +8,7 @@ const SignIn = () => {
   const [form] = Form.useForm();
   const signInContext = useContext(SignInContext);
   const [formData, setFormData] = useState({
-    login: "",
+    email: "",
     password: "",
   });
 
@@ -23,7 +23,7 @@ const SignIn = () => {
   const onSubmit = (form: typeof formData) => {
     console.log(form);
 
-    signInContext.setSignInData("login", formData.login);
+    signInContext.setSignInData("login", formData.email);
     signInContext.setSignInData("password", formData.password);
 
     signInContext.showModal(true);
@@ -43,12 +43,12 @@ const SignIn = () => {
         onFinish={onSubmit}
         labelCol={{ span: 4 }}
       >
-        <Form.Item name="login" label="Login" rules={[{ required: true }]}>
+        <Form.Item name="email" label="Email" rules={[{ required: true }]}>
           <Input
-            type="login"
-            value={formData.login}
-            onChange={() => onChange("login")}
-            placeholder="Login"
+            type="email"
+            value={formData.email}
+            onChange={() => onChange("email")}
+            placeholder="Email"
           />
         </Form.Item>
 

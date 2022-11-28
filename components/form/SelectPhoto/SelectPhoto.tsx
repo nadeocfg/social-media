@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef } from "react";
+import React, { useRef } from "react";
 
 type SelectPhotoModel = {
   file: File | null;
@@ -15,8 +15,30 @@ const SelectPhoto = ({ onChange }: SelectPhotoModel) => {
     }
   };
 
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    if (
+      e.dataTransfer.files &&
+      e.dataTransfer.files[0] &&
+      selectPhotoRef.current?.files
+    ) {
+      selectPhotoRef.current.files = e.dataTransfer.files;
+      onChange(selectPhotoRef.current?.files);
+    }
+  };
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
   return (
-    <div className="select-photo" onClick={selectFile}>
+    <div
+      className={`select-photo`}
+      onClick={selectFile}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+    >
       <input
         className="select-photo__input"
         ref={selectPhotoRef}

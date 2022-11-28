@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import SelectPhoto from "../components/form/SelectPhoto";
 
 type RegistrationFormModel = {
-  login: string;
+  username: string;
   name: string;
   sex: "male" | "female";
   email: string;
@@ -17,7 +17,7 @@ type RegistrationFormModel = {
 const Signup = () => {
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RegistrationFormModel>({
-    login: "",
+    username: "",
     name: "",
     email: "",
     sex: "female",
@@ -66,15 +66,15 @@ const Signup = () => {
         wrapperCol={{ span: 10 }}
       >
         <Form.Item
-          name="login"
-          label="Login"
+          name="username"
+          label="Username"
           rules={[{ required: true }, { pattern: /^[a-zA-Z0-9]+$/ }]}
         >
           <Input
             type="text"
-            value={formData.login}
-            onChange={onFormChange("login")}
-            placeholder="Input login"
+            value={formData.username}
+            onChange={onFormChange("username")}
+            placeholder="Input username"
           />
         </Form.Item>
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
