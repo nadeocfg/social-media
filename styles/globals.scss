@@ -1,0 +1,45 @@
+@import '~antd/dist/antd.css';
+@import './typography.scss';
+
+// Components
+@import './SelectPhoto.module.scss';
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 62px;
+  background: $light-color;
+  color: $text-color;
+  font-family: 'Ubuntu', Helvetica, sans-serif;
+  font-size: $size-16;
+
+  .ant-layout {
+    display: flex;
+    flex-direction: row;
+  }
+
+  main {
+    flex-grow: 1;
+    padding: $size-20 $size-24;
+  }
+
+  header {
+    z-index: 99;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-12 $size-20;
+    background: $secondary-color;
+  }
+
+  .logo {
+    color: $light-color;
+    font-size: $size-30;
+    font-weight: bold;
+  }
+}

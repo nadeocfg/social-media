@@ -1,0 +1,24 @@
+.select-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-24;
+  border: 2px dashed $primary-color;
+  border-radius: $size-8;
+  cursor: pointer;
+
+  p {
+    margin: 0;
+    font-size: $size-20;
+  }
+
+  input[type=file] {
+    display: none;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
