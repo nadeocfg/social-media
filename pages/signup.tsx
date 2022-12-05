@@ -1,8 +1,10 @@
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, message, Select } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SelectPhoto from "../components/form/SelectPhoto";
+import { MessageContext } from "../contexts/messageContext";
+import api from "../utils/axios";
 
 type RegistrationFormModel = {
   username: string;
@@ -12,9 +14,23 @@ type RegistrationFormModel = {
   password: string;
   about: string;
   photo: File | null;
+  photoUrl: string;
+};
+
+type RegistrationResponseModel = {
+  token: string;
+  username: string;
+  name: string;
+  email: string;
+  sex: string;
+  about: string;
+  photoUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const Signup = () => {
+  const messageContext = useContext(MessageContext);
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RegistrationFormModel>({
     username: "",
@@ -24,7 +40,10 @@ const Signup = () => {
     password: "",
     about: "",
     photo: null,
+    photoUrl: "",
   });
+
+  useEffect(() => {});
 
   const onFormChange =
     (name: string) =>
@@ -50,8 +69,57 @@ const Signup = () => {
     }
   };
 
-  const onSubmit = () => {
-    console.log(formData);
+  const uploadFile = (file: File) => {
+    const formData = new FormData();
+
+    formData.append("photo", file);
+
+    return api
+      .post("/api/upload/photo", formData)
+      .then((res) => {
+        messageContext.setMessage({
+          type: "success",
+          content: "File uploaded succesfully",
+        });
+
+        return res.data;
+      })
+      .catch((err) => {
+        messageContext.setMessage({
+          type: "error",
+          content: err.response.data.message,
+        });
+
+        return null;
+      });
+  };
+
+  const onSubmit = async () => {
+    if (formData.photo) {
+      const uploadedData = await uploadFile(formData.photo);
+      if (uploadedData) {
+        formData.photoUrl = uploadedData.photoUrl;
+      }
+    }
+
+    const data = { user: formData };
+
+    api
+      .post(`/api/signup`, data)
+      .then((response): void => {
+        window.localStorage.setItem("token", response.data.token);
+
+        messageContext.setMessage({
+          type: "success",
+          content: "User succesfully created",
+        });
+      })
+      .catch((err) => {
+        messageContext.setMessage({
+          type: "error",
+          content: err.response.data.message,
+        });
+      });
   };
 
   return (

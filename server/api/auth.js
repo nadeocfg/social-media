@@ -1,11 +1,10 @@
-const express = require("express");
+import express from "express";
+import UserModel from "../models/UserModel.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import isEmail from "validator/lib/isEmail.js";
+
 const router = express.Router();
-
-const UserModel = require("../models/UserModel");
-
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const isEmail = require("validator/lib/isEmail");
 
 router.post("/", async (request, response) => {
   const { email, password } = request.body;
@@ -42,7 +41,17 @@ router.post("/", async (request, response) => {
           throw err;
         }
 
-        response.status(200).json(token);
+        response.status(200).json({
+          token,
+          username: foundUser.username,
+          name: foundUser.name,
+          email: foundUser.email,
+          sex: foundUser.sex,
+          about: foundUser.about,
+          photo: foundUser.photoUrl,
+          createdAt: foundUser.createdAt,
+          updatedAt: foundUser.updatedAt,
+        });
       }
     );
   } catch (error) {
@@ -51,4 +60,4 @@ router.post("/", async (request, response) => {
   }
 });
 
-module.exports = router;
+export default router;

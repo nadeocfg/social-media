@@ -1,13 +1,12 @@
-const express = require("express");
+import express from "express";
+import UserModel from "../models/UserModel.js";
+import ProfileModel from "../models/ProfileModel.js";
+import FollowerModel from "../models/FollowerModel.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import isEmail from "validator/lib/isEmail.js";
+
 const router = express.Router();
-
-const UserModel = require("../models/UserModel");
-const ProfileModel = require("../models/ProfileModel");
-const FollowerModel = require("../models/FollowerModel");
-
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const isEmail = require("validator/lib/isEmail");
 
 const defaultAvatar = "/static/images/default-avatar.jpg";
 
@@ -41,7 +40,7 @@ router.get("/:username", async (request, response) => {
 });
 
 router.post("/", async (request, response) => {
-  const { username, name, email, sex, password, about, photo } =
+  const { username, name, email, sex, password, about, photoUrl } =
     request.body.user;
 
   if (!isEmail(email)) {
@@ -61,12 +60,12 @@ router.post("/", async (request, response) => {
       sex,
       password,
       about,
-      photo: photo || defaultAvatar,
+      photoUrl: photoUrl || defaultAvatar,
     });
 
     newUser.password = await bcrypt.hash(password, 10);
 
-    await newUser.save();
+    const created = await newUser.save();
 
     await new ProfileModel({
       user: newUser._id,
@@ -91,13 +90,23 @@ router.post("/", async (request, response) => {
           throw err;
         }
 
-        response.status(200).json(token);
+        response.status(200).json({
+          token,
+          username: created.username,
+          name: created.name,
+          email: created.email,
+          sex: created.sex,
+          about: created.about,
+          photoUrl: created.photoUrl,
+          createdAt: created.createdAt,
+          updatedAt: created.updatedAt,
+        });
       }
     );
   } catch (error) {
-    console.error(err);
-    return response.status(500).json({ message: "Server error" });
+    console.error(error);
+    return response.status(500).json({ message: error });
   }
 });
 
-module.exports = router;
+export default router;
