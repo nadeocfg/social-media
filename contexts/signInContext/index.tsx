@@ -5,7 +5,7 @@ export const SignInContext = React.createContext({
   showModal: (isLoading: boolean) => {},
   setSignInData: (name: string, value: string) => {},
   signInData: {
-    username: "",
+    email: "",
     password: "",
   },
 });
@@ -30,7 +30,7 @@ export const SignInContextProvider = (props: PropsWithChildren) => {
     showModal: showModal,
     setSignInData: setSignInData,
     signInData: {
-      username: "",
+      email: "",
       password: "",
     },
   });

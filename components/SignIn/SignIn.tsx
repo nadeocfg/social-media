@@ -2,9 +2,12 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Button, Divider, Form, Input, Modal } from "antd";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
+import { MessageContext } from "../../contexts/messageContext";
 import { SignInContext } from "../../contexts/signInContext";
+import api from "../../utils/axios";
 
 const SignIn = () => {
+  const messageContext = useContext(MessageContext);
   const [form] = Form.useForm();
   const signInContext = useContext(SignInContext);
   const [formData, setFormData] = useState({
@@ -21,12 +24,31 @@ const SignIn = () => {
     };
 
   const onSubmit = (form: typeof formData) => {
-    console.log(form);
+    signInContext.setSignInData("email", form.email);
+    signInContext.setSignInData("password", form.password);
 
-    signInContext.setSignInData("login", formData.email);
-    signInContext.setSignInData("password", formData.password);
+    const data = {
+      email: form.email,
+      password: form.password,
+    };
 
-    signInContext.showModal(true);
+    api
+      .post("/api/auth", data)
+      .then((res) => {
+        messageContext.setMessage({
+          type: "success",
+          content: "Logged in",
+        });
+        console.log(res.data);
+        signInContext.showModal(false);
+      })
+      .catch((err) => {
+        messageContext.setMessage({
+          type: "error",
+          content: err.response.data.message,
+        });
+        signInContext.showModal(true);
+      });
   };
 
   return (

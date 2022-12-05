@@ -9,8 +9,16 @@ const router = express.Router();
 router.post("/", async (request, response) => {
   const { email, password } = request.body;
 
+  if (!email && !password) {
+    return response.status(400).json({
+      message: "Input email and password",
+    });
+  }
+
   if (!isEmail(email)) {
-    return response.status(400).send("Invalid email");
+    return response.status(400).json({
+      message: "Invalid email",
+    });
   }
 
   try {
@@ -19,13 +27,17 @@ router.post("/", async (request, response) => {
     }).select("+password");
 
     if (!foundUser) {
-      return response.status(400).send("User is not found");
+      return response.status(400).json({
+        message: "User is not found",
+      });
     }
 
     const isPasswordValid = bcrypt.compare(password, foundUser.password);
 
     if (!isPasswordValid) {
-      return response.status(401).send("Incorrect password");
+      return response.status(401).json({
+        message: "Incorrect password",
+      });
     }
 
     const payload = {
