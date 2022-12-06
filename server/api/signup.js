@@ -97,7 +97,7 @@ router.post("/", async (request, response) => {
           email: created.email,
           sex: created.sex,
           about: created.about,
-          photoUrl: created.photoUrl,
+          photo: created.photoUrl,
           createdAt: created.createdAt,
           updatedAt: created.updatedAt,
         });

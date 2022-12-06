@@ -1,9 +1,10 @@
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Form, Input, message, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import SelectPhoto from "../components/form/SelectPhoto";
 import { MessageContext } from "../contexts/messageContext";
+import { SignInContext } from "../contexts/signInContext";
 import api from "../utils/axios";
 
 type RegistrationFormModel = {
@@ -31,6 +32,7 @@ type RegistrationResponseModel = {
 
 const Signup = () => {
   const messageContext = useContext(MessageContext);
+  const signInContext = useContext(SignInContext);
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RegistrationFormModel>({
     username: "",
@@ -42,8 +44,6 @@ const Signup = () => {
     photo: null,
     photoUrl: "",
   });
-
-  useEffect(() => {});
 
   const onFormChange =
     (name: string) =>
@@ -108,6 +108,8 @@ const Signup = () => {
       .post(`/api/signup`, data)
       .then((response): void => {
         window.localStorage.setItem("token", response.data.token);
+
+        signInContext.setSingInResponse(response.data);
 
         messageContext.setMessage({
           type: "success",

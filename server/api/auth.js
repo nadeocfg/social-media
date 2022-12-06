@@ -3,6 +3,7 @@ import UserModel from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import isEmail from "validator/lib/isEmail.js";
+import protect from "../middlewares/protectedMiddleware.js";
 
 const router = express.Router();
 
@@ -68,6 +69,47 @@ router.post("/", async (request, response) => {
     );
   } catch (error) {
     console.error(err);
+    return response.status(500).send("Server error");
+  }
+});
+
+router.route("/check-user").post(protect, async (request, response) => {
+  try {
+    const { token } = request.body;
+
+    const parsedToken = await jwt.verify(token, process.env.jwtSecret);
+
+    const foundUser = await UserModel.findById(parsedToken.userId);
+
+    const payload = {
+      userId: foundUser._id,
+    };
+
+    jwt.sign(
+      payload,
+      process.env.jwtSecret,
+      { expiresIn: "2d" },
+      (err, token) => {
+        if (err) {
+          throw err;
+        }
+
+        response.status(200).json({
+          token,
+          username: foundUser.username,
+          name: foundUser.name,
+          email: foundUser.email,
+          sex: foundUser.sex,
+          about: foundUser.about,
+          photo: foundUser.photoUrl,
+          createdAt: foundUser.createdAt,
+          updatedAt: foundUser.updatedAt,
+        });
+      }
+    );
+    return;
+  } catch (error) {
+    console.error(error);
     return response.status(500).send("Server error");
   }
 });

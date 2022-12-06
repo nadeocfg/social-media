@@ -4,6 +4,7 @@ import Sider from "antd/lib/layout/Sider";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import { LoaderContext } from "../../contexts/loaderContext";
+import { SignInContext } from "../../contexts/signInContext";
 import Header from "../Header";
 import HeadTags from "../HeadTags";
 import Loader from "../Loader";
@@ -13,6 +14,11 @@ import SignIn from "../SignIn";
 const LayoutTemplate = ({ children }: any) => {
   const router = useRouter();
   const loaderContext = useContext(LoaderContext);
+  const signInContext = useContext(SignInContext);
+
+  useEffect(() => {
+    signInContext.checkUserToken();
+  }, []);
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
